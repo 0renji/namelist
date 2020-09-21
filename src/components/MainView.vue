@@ -1,17 +1,19 @@
 <template>
     <div>
-        {{test}}
     </div>
 </template>
 
 <script>
+    import api from '../api/'
+
     export default {
         name: "MainView",
 
+        created() {
+            api.getNamesFor(2019, 'friedrichshain-kreuzberg')
+        },
+
         computed: {
-            test() {
-                return this.$store.getters['global/test'];
-            }
         }
     }
 </script>

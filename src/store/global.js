@@ -3,10 +3,16 @@ export default {
     namespaced: true,
 
     state: {
-        test: 'hi',
+        names: [],
     },
+
     getters: {
         test: state => state.test,
+        names: state => state.names,
     },
-    mutations: {},
+    mutations: {
+        setNames (state, names) {
+            state.names = names
+        }
+    },
 }
