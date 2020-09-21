@@ -1,5 +1,6 @@
 // import store from '../store'
-import request from "./request";
+import request from "./request"
+import papa from 'papaparse'
 
 const baseUrl = 'https://raw.githubusercontent.com/berlinonline/haeufige-vornamen-berlin/master/data/cleaned/';
 
@@ -10,8 +11,7 @@ const api = {
         return request({
             url: reqUrl
         }).then(data => {
-            const blob = this.createCsv(data.data)
-            const csv = this.parseCsv(blob)
+            const csv = papa.parse(data.data)
 
             console.log(csv)
         })
@@ -21,19 +21,6 @@ const api = {
     createUrl (year, disctrict) {
         return baseUrl + '/' + year + '/' + disctrict + '.csv'
     },
-
-    createCsv(data) {
-       return new Blob([data], {
-            type: "text/comma-separated-values",
-        });
-       },
-
-    parseCsv(blob) {
-        const results = []
-        let fs = new FileReader()
-        fs.readAsArrayBuffer(blob)
-
-    }
 }
 
 export default api
