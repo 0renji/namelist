@@ -1,7 +1,7 @@
 <template>
     <div>
-        <valuepicker></valuepicker>
-        <valuepicker></valuepicker>
+        <value-picker year=true, district=false> </value-picker>
+        <value-picker year=false, district=true> </value-picker>
         <barchart></barchart>
 
         <div v-if="errMsg"> {{errMsg}} </div>
@@ -10,9 +10,12 @@
 
 <script>
     import api from '../api/'
+    import ValuePicker from './ValuePicker.vue'
 
     export default {
         name: "MainView",
+        
+        components: {ValuePicker},
 
         // 0 -> surname
         // 1 -> count
