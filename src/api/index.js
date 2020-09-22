@@ -5,15 +5,18 @@ import papa from 'papaparse'
 const baseUrl = 'https://raw.githubusercontent.com/berlinonline/haeufige-vornamen-berlin/master/data/cleaned/';
 
 const api = {
+    // return array of arrays or null
     getNamesFor (district, year) {
         const reqUrl = this.createUrl(district, year)
 
         return request({
             url: reqUrl
         }).then(data => {
-            const csv = papa.parse(data.data)
-
-            console.log(csv)
+            if (data.data) {
+                return papa.parse(data.data)
+            } else {
+                return null
+            }
         })
     },
 
