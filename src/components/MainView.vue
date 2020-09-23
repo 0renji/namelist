@@ -1,6 +1,6 @@
 <template>
         <div v-if="errMsg"> {{errMsg}} </div>
-        <Barchart v-else :chart-data="chartData" ></Barchart>
+        <Barchart v-else :chart-data="chartData" :options="options" ></Barchart>
 </template>
 
 <script>
@@ -15,11 +15,17 @@
 
         data: () => {
             return {
-
+                options: {
+                   scales: {
+                       yAxes: [
+                           {
+                             ticks: { beginAtZero: true }
+                           }]
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                },
                 chartData: {},
-                nameData: [],
-                labels: [], //names
-
                 errMsg: undefined,
                 selectedYear: 2019,
                 selectedDistrict: 'friedrichshain-kreuzberg',
@@ -52,29 +58,51 @@
 
             fillData(data) {
                 //expects an array with several arrays
-                this.labels = []
-                this.chartData = {}
-                this.nameData = []
+                const nameCounts = {}
 
-                data.forEach( (nameArr, index) => {
+                data.forEach((nameArr, index) => {
+                    // 0 is header
                     if (index !== 0) {
-                        this.labels.push(nameArr[0])
-                       this.nameData.push(nameArr[2])
+                        if (nameArr[0] in nameCounts) {
+                                nameCounts[nameArr[0]] += parseInt(nameArr[1])
+                        } else {
+                             nameCounts[nameArr[0]]  = parseInt(nameArr[1])
+                        }
                     }
                 })
 
-                this.chartData = {
-                    label: this.labels,
-                    datasets: this.nameData
-                }
+                let keysSorted = Object.keys(nameCounts).sort(function(a,b){return nameCounts[b]-nameCounts[a]})
 
-                console.log(this.labels)
-                console.log(this.chartData)
+                const chartNames = {}
+
+                keysSorted.forEach(name => {
+                     chartNames[name] = nameCounts[name]
+                })
+
+                this.chartData = {
+                labels: Object.keys(chartNames),
+                datasets: [
+                            {
+                               label: 'Vornamen',
+                               backgroundColor: '#f30000',
+                               data: Object.values(chartNames)
+                            },
+                          ]
+                }
             }
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss">
+        .chart-container {
+                flex-grow: 1;
+                min-height: 0;
+
+                > div {
+                        position: relative;
+                        height: 100%;
+                }
+        }
 
 </style>
