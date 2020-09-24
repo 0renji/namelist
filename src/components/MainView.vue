@@ -1,6 +1,14 @@
 <template>
         <div v-if="errMsg"> {{errMsg}} </div>
-        <Barchart v-else :chart-data="chartData" :options="options" ></Barchart>
+        <v-container v-else class="chart-container">
+                <Barchart  :chart-data="chartData" :options="options" ></Barchart>
+                <div class="btn-container">
+                        <v-btn depressed :disabled="this.startIndex === 0" @click="switchData"> <v-icon>mdi-arrow-left</v-icon></v-btn>
+                        <v-spacer/>
+                        <v-btn depressed :disabled="this.startIndex !== 0" @click="switchData"> <v-icon>mdi-arrow-right</v-icon></v-btn>
+                </div>
+        </v-container>
+
 </template>
 
 <script>
@@ -25,6 +33,14 @@
                         responsive: true,
                         maintainAspectRatio: false
                 },
+
+                sortedChartNamesAndCounts: {},
+                displayedNames: [],
+                displayedCounts:[],
+
+                startIndex: 0,
+                endIndex: 0,
+
                 chartData: {},
                 errMsg: undefined,
                 selectedYear: 2019,
@@ -79,16 +95,43 @@
                      chartNames[name] = nameCounts[name]
                 })
 
+                this.displayedNames = Object.keys(chartNames)
+                this.displayedCounts = Object.values(chartNames)
+                this.endIndex = this.displayedNames.length / 2
+
                 this.chartData = {
-                labels: Object.keys(chartNames),
+                labels: this.displayedNames.slice(this.startIndex, this.endIndex),
                 datasets: [
                             {
                                label: 'Vornamen',
                                backgroundColor: '#f30000',
-                               data: Object.values(chartNames)
+                               data: this.displayedCounts.slice(this.startIndex, this.endIndex)
                             },
                           ]
                 }
+            },
+
+            switchData() {
+                    if (this.startIndex  === this.displayedNames.length / 2) {
+                            // the lower half is shown, show the first half
+                            this.startIndex = 0
+                            this.endIndex = this.displayedNames.length / 2
+
+                    } else {
+                            this.startIndex = this.displayedNames.length / 2
+                            this.endIndex = this.displayedNames.length
+                    }
+
+                    this.chartData ={
+                            labels: this.displayedNames.slice(this.startIndex, this.endIndex),
+                            datasets: [
+                                    {
+                                            label: 'Vornamen',
+                                            backgroundColor: '#f30000',
+                                            data: this.displayedCounts.slice(this.startIndex, this.endIndex)
+                                    },
+                            ]
+                    }
             }
         }
     }
@@ -96,12 +139,12 @@
 
 <style lang="scss">
         .chart-container {
-                flex-grow: 1;
-                min-height: 0;
+                margin-top: 10%;
 
-                > div {
-                        position: relative;
-                        height: 100%;
+                .btn-container {
+                     display: flex;
+                     flex-direction: row;
+                     margin-top: 1em;
                 }
         }
 
