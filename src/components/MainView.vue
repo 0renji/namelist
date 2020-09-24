@@ -99,16 +99,20 @@
                 this.displayedCounts = Object.values(chartNames)
                 this.endIndex = this.displayedNames.length / 2
 
-                this.chartData = {
-                labels: this.displayedNames.slice(this.startIndex, this.endIndex),
-                datasets: [
-                            {
-                               label: 'Vornamen',
-                               backgroundColor: '#f30000',
-                               data: this.displayedCounts.slice(this.startIndex, this.endIndex)
-                            },
-                          ]
-                }
+                this.fillChart()
+            },
+
+            fillChart() {
+                    this.chartData = {
+                            labels: this.displayedNames.slice(this.startIndex, this.endIndex),
+                            datasets: [
+                                    {
+                                            label: 'Vornamen',
+                                            backgroundColor: '#f30000',
+                                            data: this.displayedCounts.slice(this.startIndex, this.endIndex)
+                                    },
+                            ]
+                    }
             },
 
             switchData() {
@@ -122,16 +126,7 @@
                             this.endIndex = this.displayedNames.length
                     }
 
-                    this.chartData ={
-                            labels: this.displayedNames.slice(this.startIndex, this.endIndex),
-                            datasets: [
-                                    {
-                                            label: 'Vornamen',
-                                            backgroundColor: '#f30000',
-                                            data: this.displayedCounts.slice(this.startIndex, this.endIndex)
-                                    },
-                            ]
-                    }
+                    this.fillChart()
             }
         }
     }
