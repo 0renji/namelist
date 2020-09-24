@@ -1,7 +1,7 @@
 <template>
     <div>
-        <value-picker year=true, district=false> </value-picker>
-        <value-picker year=false, district=true> </value-picker>
+        <value-picker :year="true" :district="false"> </value-picker>
+        <value-picker :year="false" :district="true"> </value-picker>
         <barchart></barchart>
 
         <div v-if="errMsg"> {{errMsg}} </div>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-    import api from '../api/'
+    //import api from '../api/'
     import ValuePicker from './ValuePicker.vue'
 
     export default {
@@ -26,12 +26,12 @@
             return {
                 names: [],
                 errMsg: undefined,
-                selectedYear: 2019,
-                selectedDistrict: 'friedrichshain-kreuzberg',
+                selectedYear: undefined,
+                selectedDistrict: undefined,
             }
         },
 
-        created() {
+        /*created() {
             const cvs = api.getNamesFor(this.selectedYear, this.selectedDistrict)
             if (cvs) {
                 this.names = cvs
@@ -39,9 +39,13 @@
             else {
                 this.errMsg = 'Sadly no data for the year ' + this.selectedYear + ' and district ' + this.selectedYear
             }
-        },
+        },*/
 
         computed: {
+        },
+
+        methods: {
+
         }
     }
 </script>
