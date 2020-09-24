@@ -5,6 +5,8 @@
                 <div class="btn-container">
                         <v-btn depressed :disabled="this.startIndex === 0" @click="switchData"> <v-icon>mdi-arrow-left</v-icon></v-btn>
                         <v-spacer/>
+                        <div>{{partition}}</div>
+                        <v-spacer/>
                         <v-btn depressed :disabled="this.startIndex !== 0" @click="switchData"> <v-icon>mdi-arrow-right</v-icon></v-btn>
                 </div>
         </v-container>
@@ -24,14 +26,8 @@
         data: () => {
             return {
                 options: {
-                   scales: {
-                       yAxes: [
-                           {
-                             ticks: { beginAtZero: true }
-                           }]
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false
+                   responsive: true,
+                   maintainAspectRatio: false,
                 },
 
                 sortedChartNamesAndCounts: {},
@@ -40,6 +36,7 @@
 
                 startIndex: 0,
                 endIndex: 0,
+                partition: 0,
 
                 chartData: {},
                 errMsg: undefined,
@@ -97,7 +94,9 @@
 
                 this.displayedNames = Object.keys(chartNames)
                 this.displayedCounts = Object.values(chartNames)
-                this.endIndex = this.displayedNames.length / 2
+                this.endIndex = this.displayedNames.length / (this.displayedNames.length / 10)
+                this.partition = this.startIndex + ' - ' + this.endIndex
+
 
                 this.fillChart()
             },
@@ -116,7 +115,7 @@
             },
 
             switchData() {
-                    if (this.startIndex  === this.displayedNames.length / 2) {
+                    if (this.startIndex  !== this.displayedNames.length) {
                             // the lower half is shown, show the first half
                             this.startIndex = 0
                             this.endIndex = this.displayedNames.length / 2
