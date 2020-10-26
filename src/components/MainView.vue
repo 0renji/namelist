@@ -1,4 +1,9 @@
 <template>
+    <div>
+        <value-picker :year="true" :district="false"> </value-picker>
+        <value-picker :year="false" :district="true"> </value-picker>
+        <barchart></barchart>
+
         <div v-if="errMsg"> {{errMsg}} </div>
         <v-container v-else class="chart-container">
                 <Barchart  :chart-data="chartData" :options="options" ></Barchart>
@@ -16,12 +21,19 @@
 <script>
     import api from '../api/'
     import Barchart from "@/components/Barchart.js";
+    import ValuePicker from './ValuePicker.vue'
 
     export default {
         name: "MainView",
         components:{
-            Barchart
+            Barchart,
+            ValuePicker
         },
+
+        // 0 -> surname
+        // 1 -> count
+        // 2 -> sex
+        // 3 -> position
 
         data: () => {
             return {
@@ -40,8 +52,8 @@
 
                 chartData: {},
                 errMsg: undefined,
-                selectedYear: 2019,
-                selectedDistrict: 'friedrichshain-kreuzberg',
+                selectedYear: undefined,
+                selectedDistrict: undefined,
             }
         },
 
