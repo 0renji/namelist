@@ -1,15 +1,18 @@
 <template>
-  <div class="text-center">
+  <div class="selector-wrapper">
     <v-select
+    class="selector"
     v-on:change="saveYear"
     :items="years"
     label="Jahre">
     </v-select>
     <v-select
+    class="selector"
     v-on:change="saveDistrict"
     :items="districts"
     label="Bezirke">
     </v-select>
+    <v-spacer></v-spacer>
   </div>
 </template>
 
@@ -50,6 +53,14 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss">
+.selector-wrapper{
+  display: flex;
+  flex-direction: row;
 
+  .selector{
+    margin-left: 1em;
+    max-width: 10vw;
+  }
+}
 </style>

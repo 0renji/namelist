@@ -1,7 +1,7 @@
 <template>
     <div>
         <value-picker> </value-picker>
-        <v-btn depressed text @click="requestData">Namen holen</v-btn>
+        <v-btn :disabled="!areSelectionsMade" depressed text @click="requestData">Namen holen</v-btn>
         <div v-if="errMsg"> {{errMsg}} </div>
         <v-container v-else class="chart-container">
                 <Barchart  :chart-data="chartData" :options="options" ></Barchart>
@@ -14,6 +14,7 @@
                 </div>
         </v-container>
       <v-select
+          class="selector-pagination"
           :disabled="this.displayedNames.length === 0"
           v-on:change="changeShownPerPage"
           v-model="shownPerPage"
@@ -81,6 +82,9 @@
             }
 
             return paginations
+          },
+          areSelectionsMade() {
+            return !!(this.$store.getters['global/selectedYear'] && this.$store.getters['global/selectedDistrict'])
           }
         },
 
@@ -206,14 +210,20 @@
 </script>
 
 <style lang="scss">
-        .chart-container {
-                margin-top: 10%;
+.selector-pagination{
+  max-width: 7vw;
+  margin-left: 1em;
+}
+.chart-container {
+        margin-top: 2%;
+        margin-bottom: 2%;
 
-                .btn-container {
-                     display: flex;
-                     flex-direction: row;
-                     margin-top: 1em;
-                }
+
+  .btn-container {
+             display: flex;
+             flex-direction: row;
+             margin-top: 1em;
         }
+}
 
 </style>
