@@ -34,8 +34,7 @@
                 ],
 
                 districts: [
-                    'Friedrichshain-Kreuzberg' ,
-                    'MerdanLand'
+                    'Friedrichshain-Kreuzberg',
                 ],
             }
         },

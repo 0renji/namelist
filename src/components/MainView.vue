@@ -1,18 +1,24 @@
 <template>
     <div>
         <value-picker> </value-picker>
-        <v-btn @click="requestData">Namen holen</v-btn>
+        <v-btn depressed text @click="requestData">Namen holen</v-btn>
         <div v-if="errMsg"> {{errMsg}} </div>
         <v-container v-else class="chart-container">
                 <Barchart  :chart-data="chartData" :options="options" ></Barchart>
                 <div class="btn-container">
-                        <v-btn depressed :disabled="this.startIndex === 0" @click="switchData"> <v-icon>mdi-arrow-left</v-icon></v-btn>
+                        <v-btn depressed :disabled="this.startIndex === 0" @click="switchData('back')"> <v-icon>mdi-arrow-left</v-icon></v-btn>
                         <v-spacer/>
-                        <div>{{partition}}</div>
+                        <div>{{ partitionString }}</div>
                         <v-spacer/>
-                        <v-btn depressed :disabled="this.startIndex !== 0" @click="switchData"> <v-icon>mdi-arrow-right</v-icon></v-btn>
+                        <v-btn depressed :disabled="this.endIndex === this.displayedNames.length" @click="switchData('forward')"> <v-icon>mdi-arrow-right</v-icon></v-btn>
                 </div>
         </v-container>
+      <v-select
+          :disabled="this.displayedNames.length === 0"
+          v-on:change="changeShownPerPage"
+          v-model="shownPerPage"
+          :items="paginations"
+          label="Anzahl pro Seite"/>
     </div>
 </template>
 
@@ -46,7 +52,9 @@
 
                 startIndex: 0,
                 endIndex: 0,
-                partition: 0,
+
+                partitionString: '',
+                shownPerPage: 0,
 
                 chartData: {},
                 errMsg: undefined,
@@ -54,7 +62,26 @@
         },
 
         computed: {
+          paginations() {
+            let paginations = ['alle']
+            if (this.displayedNames.length > 5) {
+              paginations.push(5)
+            }
+            if (this.displayedNames.length > 10) {
+              paginations.push(10)
+            }
+            if (this.displayedNames.length > 50) {
+              paginations.push(50)
+            }
+            if (this.displayedNames.length > 100) {
+              paginations.push(100)
+            }
+            if (this.displayedNames.length > 1000) {
+              paginations.push(1000)
+            }
 
+            return paginations
+          }
         },
 
         methods: {
@@ -105,11 +132,18 @@
                 })
 
                 this.displayedNames = Object.keys(chartNames)
+
+                if (this.displayedNames.length > 10) {
+                  this.shownPerPage = 10
+                }
+                else {
+                  this.shownPerPage = this.displayedNames.length
+                }
+
                 this.displayedCounts = Object.values(chartNames)
-                this.endIndex = this.displayedNames.length / (this.displayedNames.length / 10)
-                this.partition = this.startIndex + ' - ' + this.endIndex
-
-
+                this.startIndex = 0
+                this.endIndex = this.displayedNames.length / (this.displayedNames.length / this.shownPerPage)
+                this.setPartitionString()
                 this.fillChart()
             },
 
@@ -126,19 +160,47 @@
                     }
             },
 
-            switchData() {
-                    if (this.startIndex  !== this.displayedNames.length) {
-                            // the lower half is shown, show the first half
-                            this.startIndex = 0
-                            this.endIndex = this.displayedNames.length / 2
+            switchData(direction) {
+                switch (direction){
+                case 'forward':
+                  if (this.startIndex >= 0 && this.endIndex <= this.displayedNames.length - this.shownPerPage) {
+                    this.startIndex = this.startIndex + this.shownPerPage
+                    this.endIndex = this.endIndex + this.shownPerPage
+                  } else if(this.endIndex + this.shownPerPage > this.displayedNames.length){
+                    this.startIndex = this.endIndex - ((this.endIndex + this.shownPerPage) - this.displayedNames.length)
+                    this.endIndex = this.displayedNames.length
+                  }
+                  break;
+                case 'back':
+                  if(this.startIndex !== 0 && this.startIndex - this.shownPerPage >= 0){
+                    this.startIndex = this.startIndex - this.shownPerPage
+                    this.endIndex = this.endIndex - this.shownPerPage
+                  }
+                }
 
-                    } else {
-                            this.startIndex = this.displayedNames.length / 2
-                            this.endIndex = this.displayedNames.length
-                    }
+              this.setPartitionString()
+              this.fillChart()
+            },
 
-                    this.fillChart()
-            }
+           setPartitionString() {
+              if (this.shownPerPage === this.displayedNames.length) {
+                this.partitionString = 'alle ' + this.displayedNames.length
+              }
+              else {
+                this.partitionString = this.startIndex + ' - ' + this.endIndex + ' von ' + this.displayedNames.length
+              }
+           },
+
+           changeShownPerPage(selection) {
+              if(selection === 'alle') {
+                this.shownPerPage = this.displayedNames.length
+              }
+
+              this.startIndex = 0
+              this.endIndex = this.shownPerPage
+              this.setPartitionString()
+              this.fillChart()
+           }
         }
     }
 </script>
