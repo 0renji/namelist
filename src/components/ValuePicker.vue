@@ -1,35 +1,15 @@
 <template>
   <div class="text-center">
-    <v-menu 
-      offset-y
-      transition="scale-transition">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Dropdown
-        </v-btn>
-      </template>
-      <v-list v-if="year">
-        <v-list-item @click="saveYear(item.title)"
-          v-for="(item, index) in years"
-          :key="index"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-      <v-list v-if="district">
-        <v-list-item @click="saveDistrict(item.title)"
-          v-for="(item, index) in districts"
-          :key="index"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    <v-select
+    v-on:change="saveYear"
+    :items="years"
+    label="Jahre">
+    </v-select>
+    <v-select
+    v-on:change="saveDistrict"
+    :items="districts"
+    label="Bezirke">
+    </v-select>
   </div>
 </template>
 
@@ -40,39 +20,32 @@
         name: "ValuePicker",
         namespaced: true,
 
-        props: {
-            year: Boolean,
-            district: Boolean,
-        },
-        
         data () {
             return {
                  years: [
-                    { title: '2012' },
-                    { title: '2013' },
-                    { title: '2014' },
-                    { title: '2015' },
-                    { title: '2016' },
-                    { title: '2017' },
-                    { title: '2018' },
-                    { title: '2019' }
+                    '2012',
+                    '2013' ,
+                    '2014' ,
+                    '2015' ,
+                    '2016' ,
+                    '2017' ,
+                    '2018' ,
+                    '2019'
                 ],
 
                 districts: [
-                    { title: 'Friedrichshain-Kreuzberg' },
-                    { title: 'MerdanLand'  }
+                    'Friedrichshain-Kreuzberg' ,
+                    'MerdanLand'
                 ],
             }
         },
 
         methods: {
           saveYear (selection) {
-            console.log(selection)
-            this.$store.commit['setSelectedYear', selection];
+            this.$store.commit('global/setSelectedYear', selection);
           },
           saveDistrict (selection) {
-            this.selectedDistrict = selection
-            console.log(this.selectedDistrict)
+            this.$store.commit('global/setDistrict', selection);
           },
         }
     }

@@ -1,9 +1,7 @@
 <template>
     <div>
-        <value-picker :year="true" :district="false"> </value-picker>
-        <value-picker :year="false" :district="true"> </value-picker>
-        <barchart></barchart>
-
+        <value-picker> </value-picker>
+        <v-btn @click="requestData">Namen holen</v-btn>
         <div v-if="errMsg"> {{errMsg}} </div>
         <v-container v-else class="chart-container">
                 <Barchart  :chart-data="chartData" :options="options" ></Barchart>
@@ -15,7 +13,7 @@
                         <v-btn depressed :disabled="this.startIndex !== 0" @click="switchData"> <v-icon>mdi-arrow-right</v-icon></v-btn>
                 </div>
         </v-container>
-
+    </div>
 </template>
 
 <script>
@@ -52,22 +50,7 @@
 
                 chartData: {},
                 errMsg: undefined,
-                selectedYear: undefined,
-                selectedDistrict: undefined,
             }
-        },
-
-        created() {
-            api.getNamesFor(this.selectedYear, this.selectedDistrict)
-            .then(data => {
-                if (data) {
-                    this.fillData(data.data)
-                }
-                else {
-                    this.errMsg = 'Sadly no data for the year ' + this.selectedYear + ' and district ' + this.selectedYear
-                }
-            })
-
         },
 
         computed: {
@@ -80,6 +63,23 @@
             // 1 -> count
             // 2 -> sex
             // 3 -> position
+
+            requestData() {
+                let year = this.$store.getters["global/selectedYear"]
+                let district = this.$store.getters["global/selectedDistrict"]
+
+                console.log(year, district.toLowerCase());
+
+                api.getNamesFor(year, district.toLowerCase())
+                    .then(data => {
+                        if (data) {
+                            this.fillData(data.data)
+                        }
+                        else {
+                            this.errMsg = 'Sadly no data for the year ' + this.selectedYear + ' and district ' + this.selectedYear
+                        }
+                    })
+            },
 
             fillData(data) {
                 //expects an array with several arrays
