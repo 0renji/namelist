@@ -110,7 +110,9 @@
                 let year = this.$store.getters["global/selectedYear"]
                 let district = this.$store.getters["global/selectedDistrict"]
 
-                console.log(year, district.toLowerCase());
+                if (district === 'Neukölln') {
+                    district = 'Neukoelln';
+                }
 
                 api.getNamesFor(year, district.toLowerCase())
                     .then(data => {
