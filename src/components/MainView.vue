@@ -1,25 +1,35 @@
 <template>
     <div>
-        <value-picker> </value-picker>
+        <value-picker/>
         <v-btn :disabled="!areSelectionsMade" depressed text @click="requestData">Namen holen</v-btn>
         <div v-if="errMsg"> {{errMsg}} </div>
         <v-container v-else class="chart-container">
                 <Barchart  :chart-data="chartData" :options="options" ></Barchart>
                 <div class="btn-container">
-                        <v-btn depressed :disabled="this.startIndex === 0" @click="switchData('back')"> <v-icon>mdi-arrow-left</v-icon></v-btn>
+                        <v-btn @click="switchData('fast-backward')" depressed text :disabled="this.startIndex === 0">
+                          <v-icon>mdi-skip-backward</v-icon>
+                        </v-btn>
+                        <v-btn depressed text :disabled="this.startIndex === 0" @click="switchData('back')">
+                          <v-icon>mdi-arrow-left</v-icon>
+                        </v-btn>
                         <v-spacer/>
                         <div>{{ partitionString }}</div>
                         <v-spacer/>
-                        <v-btn depressed :disabled="this.endIndex === this.displayedNames.length" @click="switchData('forward')"> <v-icon>mdi-arrow-right</v-icon></v-btn>
+                        <v-btn depressed text :disabled="this.endIndex === this.displayedNames.length" @click="switchData('forward')">
+                          <v-icon>mdi-arrow-right</v-icon>
+                        </v-btn>
+                        <v-btn @click="switchData('fast-forward')" depressed text :disabled="this.endIndex === this.displayedNames.length">
+                          <v-icon>mdi-skip-forward</v-icon>
+                        </v-btn>
                 </div>
         </v-container>
-      <v-select
-          class="selector-pagination"
-          :disabled="this.displayedNames.length === 0"
-          v-on:change="changeShownPerPage"
-          v-model="shownPerPage"
-          :items="paginations"
-          label="Anzahl pro Seite"/>
+        <v-select
+            class="selector-pagination"
+            :disabled="this.displayedNames.length === 0"
+            v-on:change="changeShownPerPage"
+            v-model="shownPerPage"
+            :items="paginations"
+            label="Anzahl pro Seite"/>
     </div>
 </template>
 
@@ -64,7 +74,7 @@
 
         computed: {
           paginations() {
-            let paginations = ['alle']
+            let paginations = []
             if (this.displayedNames.length > 5) {
               paginations.push(5)
             }
@@ -81,6 +91,8 @@
               paginations.push(1000)
             }
 
+            paginations.push('alle')
+
             return paginations
           },
           areSelectionsMade() {
@@ -89,11 +101,10 @@
         },
 
         methods: {
-
-            // 0 -> surname
-            // 1 -> count
-            // 2 -> sex
-            // 3 -> position
+              // 0 -> surname
+              // 1 -> count
+              // 2 -> sex
+              // 3 -> position
 
             requestData() {
                 let year = this.$store.getters["global/selectedYear"]
@@ -112,6 +123,10 @@
                     })
             },
 
+          /**
+           * fills the data array, splitting the data into the displayedNames array (x axis)
+           * and the nameCounts object
+           */
             fillData(data) {
                 //expects an array with several arrays
                 const nameCounts = {}
@@ -151,6 +166,9 @@
                 this.fillChart()
             },
 
+            /**
+             * fills the chart with data using the current start and end index
+             */
             fillChart() {
                     this.chartData = {
                             labels: this.displayedNames.slice(this.startIndex, this.endIndex),
@@ -164,10 +182,14 @@
                     }
             },
 
+            /**
+             * changes the data on button press keeping the current pagination in mind
+             */
             switchData(direction) {
                 switch (direction){
                 case 'forward':
-                  if (this.startIndex >= 0 && this.endIndex <= this.displayedNames.length - this.shownPerPage) {
+                  if (this.startIndex >= 0
+                      && this.endIndex <= this.displayedNames.length - this.shownPerPage) {
                     this.startIndex = this.startIndex + this.shownPerPage
                     this.endIndex = this.endIndex + this.shownPerPage
                   } else if(this.endIndex + this.shownPerPage > this.displayedNames.length){
@@ -180,13 +202,25 @@
                     this.startIndex = this.startIndex - this.shownPerPage
                     this.endIndex = this.endIndex - this.shownPerPage
                   }
+                  break;
+                 case 'fast-forward':
+                   this.startIndex = this.displayedNames.length - this.shownPerPage
+                   this.endIndex = this.displayedNames.length
+                   break;
+                 case 'fast-backwards':
+                   this.startIndex = 0
+                   this.endIndex = this.shownPerPage
+                   break;
                 }
 
               this.setPartitionString()
               this.fillChart()
             },
 
-           setPartitionString() {
+            /**
+             * sets the shown string with the displayed data and current pagination
+             */
+            setPartitionString() {
               if (this.shownPerPage === this.displayedNames.length) {
                 this.partitionString = 'alle ' + this.displayedNames.length
               }
@@ -195,16 +229,18 @@
               }
            },
 
-           changeShownPerPage(selection) {
-              if(selection === 'alle') {
-                this.shownPerPage = this.displayedNames.length
-              }
+            changeShownPerPage(selection) {
+                // replace the "alle" string to the data length
+                if(selection === 'alle') {
+                  this.shownPerPage = this.displayedNames.length
+                }
 
-              this.startIndex = 0
-              this.endIndex = this.shownPerPage
-              this.setPartitionString()
-              this.fillChart()
-           }
+                this.startIndex = 0
+                this.endIndex = this.shownPerPage
+
+                this.setPartitionString()
+                this.fillChart()
+             }
         }
     }
 </script>
