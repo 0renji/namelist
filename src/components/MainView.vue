@@ -57,6 +57,13 @@
             v-model="shownPerPage"
             :items="paginations"
             label="Anzahl pro Seite"/>
+      <v-text-field
+          class="selector-pagination"
+          :disabled="this.displayedNames.length === 0"
+          v-on:change="jumpToPage"
+          label=""
+          placeholder="Springe zu"
+          clearable/>
     </div>
 </template>
 
@@ -122,6 +129,7 @@
 
             return paginations
           },
+
           areSelectionsMade() {
             return !!(this.$store.getters['global/selectedYear'] && this.$store.getters['global/selectedDistrict'])
           },
@@ -306,6 +314,30 @@
 
                 filteredNames.forEach(name => filteredNameCounts[name] = nameCounts[name])
                 return filteredNameCounts
+            },
+
+            jumpToPage(page) {
+              const jumpPage = parseInt(page)
+              console.log(typeof jumpPage, jumpPage)
+              if (!page) {
+                this.setPartitionString()
+                this.fillChart()
+                return null
+              }
+              else if (jumpPage < 0 || jumpPage > this.displayedNames.length) {
+                return null
+              }
+
+              if(this.startIndex + this.shownPerPage > this.displayedNames.length) {
+                this.endIndex = this.displayedNames.length
+              } else {
+                this.endIndex = this.endIndex + this.shownPerPage
+              }
+
+              this.startIndex = jumpPage
+
+              this.setPartitionString()
+              this.fillChart()
             }
         }
     }
@@ -316,7 +348,7 @@
   padding: 1em;
 }
 .selector-pagination{
-  max-width: 7vw;
+  max-width: 13vw;
   margin-left: 1em;
 }
 .chart-container {
