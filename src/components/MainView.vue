@@ -7,10 +7,9 @@
                @click="requestData">
           Namen holen
         </v-btn>
-        <v-btn :disabled="!nameFilter"
-               depressed
+        <v-btn depressed
                text
-               @click="filterByName">
+               @click="fillData(storedData)">
           Filtern
         </v-btn>
         <div v-if="errMsg">
@@ -127,7 +126,13 @@
             return !!(this.$store.getters['global/selectedYear'] && this.$store.getters['global/selectedDistrict'])
           },
           nameFilter() {
-            return this.$store.getters['global/nameFilter']
+            let filter = this.$store.getters['global/nameFilter']
+
+            if (!filter) {
+              return ''
+            }
+
+            return filter.trim()
           },
           storedData() {
             return this.$store.getters['global/data']
@@ -151,7 +156,7 @@
                 api.getNamesFor(year, district.toLowerCase())
                     .then(data => {
                         if (data) {
-                          this.$store.commit('global/setData', data)
+                          this.$store.commit('global/setData', data.data)
                           this.fillData(data.data)
                         }
                         else {
@@ -160,24 +165,32 @@
                     })
             },
 
-          /**
-           * fills the data array, splitting the data into the displayedNames array (x axis)
-           * and the nameCounts object
-           */
+            mapNameCounts(data) {
+            let nameCounts = {}
+
+            data.forEach((nameArr, index) => {
+              // 0 is header
+              if (index !== 0) {
+                if (nameArr[0] in nameCounts) {
+                  nameCounts[nameArr[0]] += parseInt(nameArr[1])
+                } else {
+                  nameCounts[nameArr[0]]  = parseInt(nameArr[1])
+                }
+              }
+            })
+
+            return nameCounts
+          },
+
+            /**
+             * fills the data array, splitting the data into the displayedNames array (x axis)
+             * and the nameCounts object
+             */
             fillData(data) {
                 //expects an array with several arrays
-                const nameCounts = {}
+                let nameCounts = this.mapNameCounts(data)
 
-                data.forEach((nameArr, index) => {
-                    // 0 is header
-                    if (index !== 0) {
-                        if (nameArr[0] in nameCounts) {
-                                nameCounts[nameArr[0]] += parseInt(nameArr[1])
-                        } else {
-                             nameCounts[nameArr[0]]  = parseInt(nameArr[1])
-                        }
-                    }
-                })
+                nameCounts = this.filterByName(nameCounts)
 
                 let keysSorted = Object.keys(nameCounts).sort(function(a,b){return nameCounts[b]-nameCounts[a]})
 
@@ -279,15 +292,20 @@
                 this.fillChart()
              },
 
-            filterByName() {
-              let data = Object.values(this.storedData)
+            filterByName(nameCounts) {
+                // return nameCounts from original data
                 if (this.nameFilter.length === 0) {
-                  this.fillData(this.$store.getters['global/data'])
+                  return this.mapNameCounts(this.storedData)
                 }
+                let names = Object.keys(nameCounts)
 
+                let filteredNameCounts = {}
 
-                data = data.filter(nameArr => nameArr[0].toLowerCase().includes(this.nameFilter.toLowerCase()))
-                this.fillData(data)
+                // filter the given nameCounts / data
+                let filteredNames = names.filter(name  => name.toLowerCase().indexOf(this.nameFilter.toLowerCase()) > -1)
+
+                filteredNames.forEach(name => filteredNameCounts[name] = nameCounts[name])
+                return filteredNameCounts
             }
         }
     }

@@ -5,7 +5,7 @@ export default {
     state: {
         selectedYear: undefined,
         selectedDistrict: undefined,
-        nameFilter: undefined,
+        nameFilter: '',
         data: undefined
     },
 
