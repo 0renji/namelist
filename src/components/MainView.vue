@@ -1,24 +1,46 @@
 <template>
     <div>
         <value-picker/>
-        <v-btn :disabled="!areSelectionsMade" depressed text @click="requestData">Namen holen</v-btn>
-        <div v-if="errMsg"> {{errMsg}} </div>
-        <v-container v-else class="chart-container">
-                <Barchart  :chart-data="chartData" :options="options" ></Barchart>
+        <v-btn :disabled="!areSelectionsMade"
+               depressed
+               text
+               @click="requestData">
+          Namen holen
+        </v-btn>
+        <div v-if="errMsg">
+          {{errMsg}}
+        </div>
+        <v-container v-else
+                     class="chart-container">
+                <Barchart
+                    :chart-data="chartData"
+                    :options="options" />
                 <div class="btn-container">
-                        <v-btn @click="switchData('fast-backward')" depressed text :disabled="this.startIndex === 0">
+                        <v-btn @click="switchData('fast-backward')"
+                               depressed
+                               text
+                               :disabled="this.startIndex === 0">
                           <v-icon>mdi-skip-backward</v-icon>
                         </v-btn>
-                        <v-btn depressed text :disabled="this.startIndex === 0" @click="switchData('back')">
+                        <v-btn depressed
+                               text
+                               :disabled="this.startIndex === 0"
+                               @click="switchData('back')">
                           <v-icon>mdi-arrow-left</v-icon>
                         </v-btn>
                         <v-spacer/>
                         <div>{{ partitionString }}</div>
                         <v-spacer/>
-                        <v-btn depressed text :disabled="this.endIndex === this.displayedNames.length" @click="switchData('forward')">
+                        <v-btn depressed
+                               text
+                               :disabled="this.endIndex === this.displayedNames.length"
+                               @click="switchData('forward')">
                           <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
-                        <v-btn @click="switchData('fast-forward')" depressed text :disabled="this.endIndex === this.displayedNames.length">
+                        <v-btn @click="switchData('fast-forward')"
+                               depressed
+                               text
+                               :disabled="this.endIndex === this.displayedNames.length">
                           <v-icon>mdi-skip-forward</v-icon>
                         </v-btn>
                 </div>

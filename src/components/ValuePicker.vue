@@ -12,6 +12,13 @@
     :items="districts"
     label="Bezirke">
     </v-select>
+    <v-text-field
+        class="selector"
+        label=""
+        placeholder="Filter"
+        clearable
+    >
+    </v-text-field>
     <v-spacer></v-spacer>
   </div>
 </template>
