@@ -207,7 +207,7 @@
                    this.startIndex = this.displayedNames.length - this.shownPerPage
                    this.endIndex = this.displayedNames.length
                    break;
-                 case 'fast-backwards':
+                 case 'fast-backward':
                    this.startIndex = 0
                    this.endIndex = this.shownPerPage
                    break;
