@@ -5,11 +5,15 @@ export default {
     state: {
         selectedYear: undefined,
         selectedDistrict: undefined,
+        nameFilter: undefined,
+        data: undefined
     },
 
     getters: {
         selectedYear: state => state.selectedYear,
-        selectedDistrict: state => state.selectedDistrict
+        selectedDistrict: state => state.selectedDistrict,
+        nameFilter: state => state.nameFilter,
+        data: state => state.data,
     },
     mutations: {
         setSelectedYear (state, selectedYear) {
@@ -17,6 +21,12 @@ export default {
         },
         setDistrict (state, selectedDistrict) {
             state.selectedDistrict = selectedDistrict
+        },
+        setNameFilter (state, nameFilter) {
+            state.nameFilter = nameFilter
+        },
+        setData(state, data) {
+            state.data = data
         }
     },
 }

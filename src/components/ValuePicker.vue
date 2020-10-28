@@ -4,19 +4,20 @@
     class="selector"
     v-on:change="saveYear"
     :items="years"
-    label="Jahre">
+    label="Jahr">
     </v-select>
     <v-select
     class="selector"
     v-on:change="saveDistrict"
     :items="districts"
-    label="Bezirke">
+    label="Bezirk">
     </v-select>
-    <v-text-field
-        class="selector"
-        label=""
-        placeholder="Filter"
-        clearable
+    <v-text-field class="selector"
+                  label=""
+                  placeholder="Filter"
+                  clearable
+                  v-on:change="saveNameFilter"
+                  :disabled="!hasData"
     >
     </v-text-field>
     <v-spacer></v-spacer>
@@ -59,13 +60,21 @@
                 ],
             }
         },
+      computed: {
+        hasData () {
+          return !!this.$store.getters['global/data']
+        }
+      },
 
-        methods: {
+      methods: {
           saveYear (selection) {
             this.$store.commit('global/setSelectedYear', selection);
           },
           saveDistrict (selection) {
             this.$store.commit('global/setDistrict', selection);
+          },
+          saveNameFilter (selection) {
+            this.$store.commit('global/setNameFilter', selection);
           },
         }
     }

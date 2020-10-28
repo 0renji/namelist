@@ -1,11 +1,17 @@
 <template>
-    <div>
+    <div class="view-wrapper">
         <value-picker/>
         <v-btn :disabled="!areSelectionsMade"
                depressed
                text
                @click="requestData">
           Namen holen
+        </v-btn>
+        <v-btn :disabled="!nameFilter"
+               depressed
+               text
+               @click="filterByName">
+          Filtern
         </v-btn>
         <div v-if="errMsg">
           {{errMsg}}
@@ -119,6 +125,12 @@
           },
           areSelectionsMade() {
             return !!(this.$store.getters['global/selectedYear'] && this.$store.getters['global/selectedDistrict'])
+          },
+          nameFilter() {
+            return this.$store.getters['global/nameFilter']
+          },
+          storedData() {
+            return this.$store.getters['global/data']
           }
         },
 
@@ -139,7 +151,8 @@
                 api.getNamesFor(year, district.toLowerCase())
                     .then(data => {
                         if (data) {
-                            this.fillData(data.data)
+                          this.$store.commit('global/setData', data)
+                          this.fillData(data.data)
                         }
                         else {
                             this.errMsg = 'Sadly no data for the year ' + this.selectedYear + ' and district ' + this.selectedYear
@@ -264,12 +277,26 @@
 
                 this.setPartitionString()
                 this.fillChart()
-             }
+             },
+
+            filterByName() {
+              let data = Object.values(this.storedData)
+                if (this.nameFilter.length === 0) {
+                  this.fillData(this.$store.getters['global/data'])
+                }
+
+
+                data = data.filter(nameArr => nameArr[0].toLowerCase().includes(this.nameFilter.toLowerCase()))
+                this.fillData(data)
+            }
         }
     }
 </script>
 
 <style lang="scss">
+.view-wrapper{
+  padding: 1em;
+}
 .selector-pagination{
   max-width: 7vw;
   margin-left: 1em;
