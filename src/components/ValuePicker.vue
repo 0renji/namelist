@@ -37,7 +37,18 @@
                 ],
 
                 districts: [
-                    'Friedrichshain-Kreuzberg',
+                        'Charlottenburg-Wilmersdorf',
+                        'Friedrichshain-Kreuzberg',
+                        'Lichtenberg',
+                        'Marzahn-Hellersdorf',
+                        'Mitte',
+                        'Neukölln',
+                        'Pankow',
+                        'Reinickendorf',
+                        'Spandau',
+                        'Steglitz-Zehlendorf',
+                        'Tempelhof-Schoeneberg',
+                        'Treptow-Koepenick',
                 ],
             }
         },
