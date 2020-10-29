@@ -50,20 +50,24 @@
                         </v-btn>
                 </div>
         </v-container>
+      <div class="selector-wrapper">
+        <v-spacer/>
         <v-select
-            class="selector-pagination"
-            :disabled="this.displayedNames.length === 0"
-            v-on:change="changeShownPerPage"
-            v-model="shownPerPage"
-            :items="paginations"
-            label="Anzahl pro Seite"/>
-      <v-text-field
-          class="selector-pagination"
-          :disabled="this.displayedNames.length === 0"
-          v-on:change="jumpToPage"
-          label=""
-          placeholder="Springe zu"
-          clearable/>
+                  class="selector-pagination"
+                  :disabled="this.displayedNames.length === 0"
+                  v-on:change="changeShownPerPage"
+                  v-model="shownPerPage"
+                  :items="paginations"
+                  label="Anzahl pro Seite"/>
+         <v-text-field
+                        class="selector-jumpto"
+                        :disabled="this.displayedNames.length === 0"
+                        v-on:change="jumpToPage"
+                        label=""
+                        placeholder="Springe zu"
+                        clearable/>
+        <v-spacer/>
+      </div>
     </div>
 </template>
 
@@ -347,13 +351,21 @@
 .view-wrapper{
   padding: 1em;
 }
+
+.selector-wrapper{
+  display: flex;
+  flex-direction: row;
+}
 .selector-pagination{
-  max-width: 13vw;
+  max-width: 10%;
+  margin-left: 1em;
+}
+.selector-jumpto{
+  max-width: 10%;
   margin-left: 1em;
 }
 .chart-container {
         margin-top: 2%;
-        margin-bottom: 2%;
 
 
   .btn-container {
