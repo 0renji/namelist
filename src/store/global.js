@@ -3,16 +3,30 @@ export default {
     namespaced: true,
 
     state: {
-        names: [],
+        selectedYear: undefined,
+        selectedDistrict: undefined,
+        nameFilter: '',
+        data: undefined
     },
 
     getters: {
-        test: state => state.test,
-        names: state => state.names,
+        selectedYear: state => state.selectedYear,
+        selectedDistrict: state => state.selectedDistrict,
+        nameFilter: state => state.nameFilter,
+        data: state => state.data,
     },
     mutations: {
-        setNames (state, names) {
-            state.names = names
+        setSelectedYear (state, selectedYear) {
+            state.selectedYear = selectedYear
+        },
+        setDistrict (state, selectedDistrict) {
+            state.selectedDistrict = selectedDistrict
+        },
+        setNameFilter (state, nameFilter) {
+            state.nameFilter = nameFilter
+        },
+        setData(state, data) {
+            state.data = data
         }
     },
 }
