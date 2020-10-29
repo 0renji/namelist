@@ -318,7 +318,7 @@
 
             jumpToPage(page) {
               const jumpPage = parseInt(page)
-              console.log(typeof jumpPage, jumpPage)
+
               if (!page) {
                 this.setPartitionString()
                 this.fillChart()
@@ -331,7 +331,7 @@
               if(this.startIndex + this.shownPerPage > this.displayedNames.length) {
                 this.endIndex = this.displayedNames.length
               } else {
-                this.endIndex = this.endIndex + this.shownPerPage
+                this.endIndex = jumpPage + this.shownPerPage
               }
 
               this.startIndex = jumpPage
